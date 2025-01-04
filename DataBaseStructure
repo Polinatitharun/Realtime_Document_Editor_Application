@@ -1,0 +1,162 @@
+CREATE TABLE Users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL, -- Store hashed passwords
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Documents (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT DEFAULT '', -- Document content
+    owner_id INT NOT NULL, -- Foreign key to Users table
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Document_Users (
+    id SERIAL PRIMARY KEY,
+    document_id INT NOT NULL, -- Foreign key to Documents table
+    user_id INT NOT NULL, -- Foreign key to Users table
+    role ENUM('owner', 'editor', 'viewer') DEFAULT 'viewer', -- Permission level
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (document_id) REFERENCES Documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    UNIQUE(document_id, user_id) -- Ensure no duplicate entries
+);
+
+
+CREATE TABLE Version_History (
+    id SERIAL PRIMARY KEY,
+    document_id INT NOT NULL, -- Foreign key to Documents table
+    version_number INT NOT NULL, -- Incremental versioning
+    content TEXT NOT NULL, -- Snapshot of content
+    edited_by INT NOT NULL, -- User who made the changes
+    edited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (document_id) REFERENCES Documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (edited_by) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+Essential Queries
+1. Insert New User (Sign-Up)
+
+INSERT INTO Users (username, email, password_hash) 
+VALUES ('exampleUser', 'user@example.com', 'hashed_password');
+
+
+Memory updated
+To add CRUD operations with authentication for your real-time document editor, here is a detailed database schema with efficient design and corresponding SQL queries:
+
+Database Schema
+1. Users Table
+Purpose: To store user details and credentials.
+Schema:
+sql
+Copy code
+CREATE TABLE Users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL, -- Store hashed passwords
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+2. Documents Table
+Purpose: To store document metadata.
+Schema:
+sql
+Copy code
+CREATE TABLE Documents (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT DEFAULT '', -- Document content
+    owner_id INT NOT NULL, -- Foreign key to Users table
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+3. Document_Users Table
+Purpose: To manage document collaboration permissions (users who can access a document).
+Schema:
+sql
+Copy code
+CREATE TABLE Document_Users (
+    id SERIAL PRIMARY KEY,
+    document_id INT NOT NULL, -- Foreign key to Documents table
+    user_id INT NOT NULL, -- Foreign key to Users table
+    role ENUM('owner', 'editor', 'viewer') DEFAULT 'viewer', -- Permission level
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (document_id) REFERENCES Documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    UNIQUE(document_id, user_id) -- Ensure no duplicate entries
+);
+4. Version_History Table
+Purpose: To store version history of document changes.
+Schema:
+sql
+Copy code
+CREATE TABLE Version_History (
+    id SERIAL PRIMARY KEY,
+    document_id INT NOT NULL, -- Foreign key to Documents table
+    version_number INT NOT NULL, -- Incremental versioning
+    content TEXT NOT NULL, -- Snapshot of content
+    edited_by INT NOT NULL, -- User who made the changes
+    edited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (document_id) REFERENCES Documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (edited_by) REFERENCES Users(id) ON DELETE CASCADE
+);
+Essential Queries
+1. Insert New User (Sign-Up)
+sql
+Copy code
+INSERT INTO Users (username, email, password_hash) 
+VALUES ('exampleUser', 'user@example.com', 'hashed_password');
+
+2. Authenticate User (Login)
+
+SELECT id, password_hash 
+FROM Users 
+WHERE email = 'user@example.com';
+
+3.Create a New Document
+
+INSERT INTO Documents (title, content, owner_id) 
+VALUES ('New Document', '', 1) 
+RETURNING id;
+
+4.Add a Collaborator to a Document
+INSERT INTO Document_Users (document_id, user_id, role) 
+VALUES (1, 2, 'editor');
+
+5. Fetch Documents Accessible to a User
+SELECT d.id, d.title, du.role
+FROM Documents d
+JOIN Document_Users du ON d.id = du.document_id
+WHERE du.user_id = 1;
+
+6. Update Document Content (Save)
+UPDATE Documents 
+SET content = 'Updated content here', updated_at = CURRENT_TIMESTAMP 
+WHERE id = 1 AND owner_id = 1;
+
+7. Insert Version History
+INSERT INTO Version_History (document_id, version_number, content, edited_by) 
+VALUES (1, 2, 'Updated content here', 1);
+
+8. Fetch Version History of a Document
+
+
+SELECT version_number, content, edited_at, edited_by 
+FROM Version_History 
+WHERE document_id = 1
+ORDER BY version_number DESC;
+
+
+
+Features of this Schema
+Scalability: The schema supports multiple collaborators per document and maintains a detailed version history.
+Security: Uses hashed passwords and enforces data integrity through foreign keys and constraints.
+Flexibility: The role column in Document_Users supports fine-grained access control (owner, editor, viewer).
+Efficiency: Indexed primary and foreign keys ensure efficient querying.

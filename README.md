@@ -1,137 +1,120 @@
-Real-Time Collaborative Document Editor
-This project is a real-time collaborative document editor built using React.js, Node.js, Express, Socket.IO, and Quill. It allows multiple users to edit the same document simultaneously, with real-time synchronization of content and user presence tracking.
+Assessment Task: Real-Time Collaborative Document Editing Application
 
-Table of Contents
-Project Overview
-Features
-Technologies Used
-Getting Started
-Running the Application
-Effective Solutions Implemented
-Deployment
-Future Practices
-License
-Project Overview
-This application is designed to provide users with a seamless experience when collaborating on documents in real time. By using WebSockets (via Socket.IO), it ensures that any content changes made by one user are instantly reflected on all other connected users' devices.
+Objective
 
-The backend is built using Node.js and Express to handle real-time communication, while the frontend is built using React.js, with Quill as the rich text editor.
+Develop a real-time collaborative document editing application that allows multiple users to edit a document simultaneously. The application provides a responsive user interface, handles concurrent edits gracefully, and ensures data consistency across all users. This project demonstrates proficiency in Node.js, React.js, SQL, NoSQL, cloud services, and WebSocket integration.
 
-Features
-Real-Time Collaboration: Multiple users can edit the same document at the same time, with live updates pushed to all users.
-User Presence: Displays the list of users currently in the document, allowing real-time collaboration transparency.
-Version History: Users can view and revert to previous versions of the document.
-Cross-Origin Resource Sharing (CORS): Proper CORS configuration ensures that the frontend React app (running on a different port) can interact with the backend.
-Responsive Design: Fully responsive layout to support different screen sizes, from desktops to mobile devices.
-Technologies Used
-Frontend: React.js, Quill (for the text editor), Socket.IO-client
-Backend: Node.js, Express.js, Socket.IO
-Database: In-memory version tracking (for simplicity, could be expanded to NoSQL for persistence in future)
-Authentication (Optional): Can be integrated with JWT for secure user identification
-Deployment Tools: Docker, Heroku, AWS (for cloud deployment)
-Getting Started
-To set up and run this project locally, follow these steps:
+Implementation Summary
 
-Prerequisites
-Node.js and npm installed on your machine.
-Basic knowledge of React and Node.js.
-Step 1: Clone the Repository
+1. User Interface (Frontend)
 
-git clone https://github.com/Polinatitharun/Realtime_Document_Editor_Application.git
-cd document-collaboration-app
-Step 2: Install Dependencies
-Backend (Node.js/Express/Socket.IO)
-Navigate to the backend folder and install the necessary dependencies:
+Document Editor
 
+Rich Text Editor: Integrated react-quill for a responsive and user-friendly text editing experience with features like bold, italic, underline, and bullet lists.
 
-cd backend
-npm install
-Frontend (React.js)
-Navigate to the frontend folder and install the necessary dependencies:
+Real-Time Editing: Enabled collaborative document editing with WebSocket integration using Socket.IO, ensuring all changes are propagated in real-time with minimal latency.
 
-cd frontend
-npm install
-Step 3: Create Environment Variables
-In the root of the project, create a .env file and add the following configuration:
+User Presence Indicator
 
-Backend .env file:
-env
-PORT=3000
-CLIENT_URL=http://localhost:3001
-Frontend .env file:
-env
+Real-Time User List: Displays users currently editing the document with their names and presence status.
 
-REACT_APP_SOCKET_URL=http://localhost:3000
-Step 4: Run the Application
-Start Backend
-bash
+Dynamic Updates: Updates the user list in real-time when users join or leave the document.
 
-cd backend
-npm start
-This will start the backend server on http://localhost:3000.
+Version History
 
-Start Frontend
-bash
-cd frontend
-npm start
-This will start the frontend React app on http://localhost:3001.
+Comprehensive History: Tracks and displays version history for the document.
 
-You should now be able to open your browser and visit http://localhost:3001 to access the collaborative document editor.
+Revert Functionality: Allows users to revert to earlier versions of the document when needed.
 
-Effective Solutions Implemented
-1. Real-Time Collaboration with Socket.IO:
-We used Socket.IO to create a bidirectional event-based communication channel between the client and the server. This ensures that updates to the document are transmitted instantly to all connected users.
+2. Backend Services
 
-2. User Presence Tracking:
-We implemented a user presence feature that updates the user list in real-time whenever someone joins or leaves the document. This is powered by emitting and receiving events (joinDocument, updateUsers) over Socket.IO.
+Authentication API
 
-3. Version History:
-Version history is tracked in-memory, allowing users to view and revert to previous versions of the document. This feature uses a combination of state management in React and event handling in Socket.IO.
+User Registration: Secure sign-up functionality with unique username and email validations.
 
-4. Responsive Design:
-The frontend layout is fully responsive, using CSS media queries to adjust the editor and sidebar UI components based on screen size. This ensures the application is usable on both large desktops and small mobile devices.
+Login System: Secure user login with password hashing (bcrypt) and token-based authentication (JWT).
 
-5. CORS Configuration:
-Proper CORS headers were set up to allow cross-origin requests from the frontend running on a different port (3001) while the backend listens on port 3000. This setup enables seamless communication between the two.
+Session Management: Manages user sessions and tokens securely.
+
+Document Management API
+
+CRUD Operations: Implemented endpoints for creating, reading, updating, and deleting documents.
+
+Version Control: Maintains document revision history with timestamps for rollback functionality.
+
+Real-Time Collaboration Service
+
+WebSocket Connections: Handles real-time updates using Socket.IO to synchronize changes across multiple users.
+
+Connection Management: Manages dropouts and reconnections seamlessly, ensuring data integrity.
+
+3. Database Architecture
+
+SQL Database (MySQL)
+
+User Management: Stores user information, including usernames, emails, and hashed passwords.
+
+Document Metadata: Maintains relationships between users and documents (e.g., ownership, access permissions).
+
+NoSQL Database (MongoDB)
+
+Document Content: Stores document data and revision history for efficient retrieval and updates.
+
+Version History: Tracks changes to allow users to view or revert to previous document states.
+
+4. Cloud Integration
 
 Deployment
-For deployment, you can use services like Heroku, AWS EC2, or Docker to host both the backend and frontend.
 
-Deployment Steps
-Frontend Deployment:
+Platform: Hosted on a cloud service with automated build and deployment pipelines.
 
-Build the React app for production:
-bash
-Copy code
-npm run build
-Serve the build folder using Express (for backend deployment).
-Deploy the app to services like Netlify or Vercel for frontend-only hosting.
-Backend Deployment:
+Static Files: Frontend built with React and served as static files from the backend.
 
-Ensure the backend is serving static files correctly for production:
-javascript
-Copy code
-app.use(express.static(path.join(__dirname, 'build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-Deploy the backend to services like Heroku, AWS EC2, or DigitalOcean.
-Socket.IO & CORS Configuration for Production:
+Scalability
 
-Ensure that your Socket.IO server is configured to accept connections only from trusted origins by properly setting the origin in the cors configuration.
-Future Practices
-Persistence: Implement database integration (like MongoDB or Firebase) to persist document content and version history, ensuring data is stored beyond just the session.
+WebSocket Scaling: Configured backend to handle multiple WebSocket connections efficiently, ensuring smooth collaboration.
 
-Authentication & Authorization: Add user authentication (via JWT or OAuth) to ensure users are identified when editing the document, making it secure and personalized.
+Load Balancing: Ready for scaling as user base increases.
 
-Real-Time Collaboration Features:
+Deliverables
 
-Add features like change tracking to show exactly what content is being modified in real-time.
-Integrate more advanced conflict resolution mechanisms when multiple users are editing the same content.
-Testing & Optimization: Implement unit tests, integration tests, and end-to-end tests to ensure the reliability and scalability of the application.
+Codebase
 
-Scaling: Consider implementing WebSockets clustering or use a message broker (e.g., Redis Pub/Sub) to handle multiple servers and scaling needs as user load increases.
+Complete source code repository with modular and well-documented code.
 
+Backend implemented using Node.js and Express with structured routes and controllers.
 
+Frontend built with React.js for a responsive and intuitive user experience.
 
-Contact
-For any inquiries or collaboration opportunities, please contact Tharun Polinati.
+Features Delivered
+
+Real-time collaborative document editing with live updates.
+
+Secure authentication system with login and sign-up pages.
+
+User presence indicators and version history.
+
+CRUD operations for document management.
+
+Documentation
+
+Setup Instructions: Comprehensive guide to set up the development and production environments.
+
+Database Schema: Detailed structure and queries for SQL (MySQL) and NoSQL (MongoDB) databases.
+
+Deployment Steps: Instructions for hosting the application on a cloud platform.
+
+Testing Guide: Procedures to test user flows, real-time updates, and error handling.
+
+Highlights
+
+Real-Time Collaboration: Enabled seamless multi-user collaboration with minimal latency.
+
+Secure Authentication: Implemented secure user registration and login workflows.
+
+Scalability-Ready: Built with a scalable architecture for handling concurrent users efficiently.
+
+User-Friendly Interface: Designed a responsive and intuitive frontend.
+
+Comprehensive Documentation: Provided detailed guides to aid in deployment and further development.
+
