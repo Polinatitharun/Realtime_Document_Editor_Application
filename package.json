@@ -1,0 +1,51 @@
+{
+  "name": "documenteditor",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "cra-template": "1.2.0",
+    "cross-fetch": "^4.1.0",
+    "dotenv": "^16.4.7",
+    "draft-js": "^0.11.7",
+    "express": "^4.21.2",
+    "quill": "^2.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-quill": "^2.0.0",
+    "react-scripts": "5.0.1",
+    "sass": "^1.83.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
