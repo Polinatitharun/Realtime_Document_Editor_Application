@@ -1,74 +1,137 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+Real-Time Collaborative Document Editor
+This project is a real-time collaborative document editor built using React.js, Node.js, Express, Socket.IO, and Quill. It allows multiple users to edit the same document simultaneously, with real-time synchronization of content and user presence tracking.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Table of Contents
+Project Overview
+Features
+Technologies Used
+Getting Started
+Running the Application
+Effective Solutions Implemented
+Deployment
+Future Practices
+License
+Project Overview
+This application is designed to provide users with a seamless experience when collaborating on documents in real time. By using WebSockets (via Socket.IO), it ensures that any content changes made by one user are instantly reflected on all other connected users' devices.
 
-## Available Scripts
+The backend is built using Node.js and Express to handle real-time communication, while the frontend is built using React.js, with Quill as the rich text editor.
 
-In the project directory, you can run:
+Features
+Real-Time Collaboration: Multiple users can edit the same document at the same time, with live updates pushed to all users.
+User Presence: Displays the list of users currently in the document, allowing real-time collaboration transparency.
+Version History: Users can view and revert to previous versions of the document.
+Cross-Origin Resource Sharing (CORS): Proper CORS configuration ensures that the frontend React app (running on a different port) can interact with the backend.
+Responsive Design: Fully responsive layout to support different screen sizes, from desktops to mobile devices.
+Technologies Used
+Frontend: React.js, Quill (for the text editor), Socket.IO-client
+Backend: Node.js, Express.js, Socket.IO
+Database: In-memory version tracking (for simplicity, could be expanded to NoSQL for persistence in future)
+Authentication (Optional): Can be integrated with JWT for secure user identification
+Deployment Tools: Docker, Heroku, AWS (for cloud deployment)
+Getting Started
+To set up and run this project locally, follow these steps:
 
-### `npm start`
+Prerequisites
+Node.js and npm installed on your machine.
+Basic knowledge of React and Node.js.
+Step 1: Clone the Repository
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+git clone https://github.com/Polinatitharun/Realtime_Document_Editor_Application.git
+cd document-collaboration-app
+Step 2: Install Dependencies
+Backend (Node.js/Express/Socket.IO)
+Navigate to the backend folder and install the necessary dependencies:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+cd backend
+npm install
+Frontend (React.js)
+Navigate to the frontend folder and install the necessary dependencies:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+cd frontend
+npm install
+Step 3: Create Environment Variables
+In the root of the project, create a .env file and add the following configuration:
 
-### `npm run build`
+Backend .env file:
+env
+PORT=3000
+CLIENT_URL=http://localhost:3001
+Frontend .env file:
+env
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+REACT_APP_SOCKET_URL=http://localhost:3000
+Step 4: Run the Application
+Start Backend
+bash
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+cd backend
+npm start
+This will start the backend server on http://localhost:3000.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Start Frontend
+bash
+cd frontend
+npm start
+This will start the frontend React app on http://localhost:3001.
 
-### `npm run eject`
+You should now be able to open your browser and visit http://localhost:3001 to access the collaborative document editor.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Effective Solutions Implemented
+1. Real-Time Collaboration with Socket.IO:
+We used Socket.IO to create a bidirectional event-based communication channel between the client and the server. This ensures that updates to the document are transmitted instantly to all connected users.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. User Presence Tracking:
+We implemented a user presence feature that updates the user list in real-time whenever someone joins or leaves the document. This is powered by emitting and receiving events (joinDocument, updateUsers) over Socket.IO.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Version History:
+Version history is tracked in-memory, allowing users to view and revert to previous versions of the document. This feature uses a combination of state management in React and event handling in Socket.IO.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. Responsive Design:
+The frontend layout is fully responsive, using CSS media queries to adjust the editor and sidebar UI components based on screen size. This ensures the application is usable on both large desktops and small mobile devices.
 
-## Learn More
+5. CORS Configuration:
+Proper CORS headers were set up to allow cross-origin requests from the frontend running on a different port (3001) while the backend listens on port 3000. This setup enables seamless communication between the two.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Deployment
+For deployment, you can use services like Heroku, AWS EC2, or Docker to host both the backend and frontend.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Deployment Steps
+Frontend Deployment:
 
-### Code Splitting
+Build the React app for production:
+bash
+Copy code
+npm run build
+Serve the build folder using Express (for backend deployment).
+Deploy the app to services like Netlify or Vercel for frontend-only hosting.
+Backend Deployment:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Ensure the backend is serving static files correctly for production:
+javascript
+Copy code
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+Deploy the backend to services like Heroku, AWS EC2, or DigitalOcean.
+Socket.IO & CORS Configuration for Production:
 
-### Analyzing the Bundle Size
+Ensure that your Socket.IO server is configured to accept connections only from trusted origins by properly setting the origin in the cors configuration.
+Future Practices
+Persistence: Implement database integration (like MongoDB or Firebase) to persist document content and version history, ensuring data is stored beyond just the session.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Authentication & Authorization: Add user authentication (via JWT or OAuth) to ensure users are identified when editing the document, making it secure and personalized.
 
-### Making a Progressive Web App
+Real-Time Collaboration Features:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Add features like change tracking to show exactly what content is being modified in real-time.
+Integrate more advanced conflict resolution mechanisms when multiple users are editing the same content.
+Testing & Optimization: Implement unit tests, integration tests, and end-to-end tests to ensure the reliability and scalability of the application.
 
-### Advanced Configuration
+Scaling: Consider implementing WebSockets clustering or use a message broker (e.g., Redis Pub/Sub) to handle multiple servers and scaling needs as user load increases.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# Realtime_Document_Editor_Application
->>>>>>> 8bf40fe3858098c6942b197cac558108d108d2f7
+Contact
+For any inquiries or collaboration opportunities, please contact Tharun Polinati.
